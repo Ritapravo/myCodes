@@ -1,33 +1,39 @@
-def subs(arr,s1, s2, n1, n2): 
-  
-    s = set() 
- 
-    if n1 == 0 or n2 == 0: 
-        s.add("") 
-        return s
-  
-    if s1[n1 - 1] == s2[n2 - 1]: 
+"""
+Input:
+abcdafe
+abdcef
 
-        tmp = subs(arr,s1, s2, n1 - 1, n2 - 1) 
-        for string in tmp: 
-            s.add(string + s1[n1 - 1]) 
+Output:
+4
+{'abdf', 'abcf', 'abde', 'abce'}
 
-    else: 
+"""
+def reverse(s):
+    s2 = ""
+    n = len(s)
+    for i in range(n-1,-1, -1):
+        s2 = s2 + s[i]
+    return (s2)
 
-        if arr[n1 - 1][n2] >= arr[n1][n2 - 1]: 
-            s = subs(arr,s1, s2, n1 - 1, n2) 
+def lcs(arr,s1, s2, m, n, curr, l):
+    if(n == 0 or m==0):
+        l.add(curr)
+        return
+    if(s1[m-1] == s2[n-1]):
+        lcs(arr, s1, s2, m-1 , n-1, curr+s1[m-1], l)
+    else:
+        if(arr[m][n]==arr[m-1][n]):
+            lcs(arr, s1, s2, m-1, n, curr, l)
             
-        if arr[n1][n2 - 1] >= arr[n1 - 1][n2]: 
-            tmp = subs(arr,s1, s2, n1, n2 - 1) 
+        if(arr[m][n]==arr[m][n-1]):
+            lcs(arr, s1, s2, m, n-1, curr, l)
 
-            for i in tmp: 
-                s.add(i) 
-    return s
-
-s1 = input()
-s2 = input()
+            
+s1 = reverse(input())
+s2 = reverse(input())
 n1 = len(s1)
 n2 = len(s2)
+
 arr = [[0 for i in range(n2+1)] for j in range(n1+1)]
 for i in range(1,n1+1):
     for j in range(1,n2+1):
@@ -36,6 +42,8 @@ for i in range(1,n1+1):
         else:
             arr[i][j] = max(arr[i-1][j],arr[i][j-1])
 print(arr[n1][n2])
-s = subs(arr,s1,s2,n1,n2)
-for i in s:
-    print(i)
+
+l = set()
+curr = ""
+lcs(arr, s1, s2, n1, n2, curr, l)
+print(l)
